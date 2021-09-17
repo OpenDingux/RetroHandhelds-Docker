@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     file \
     build-essential \
     gcc-multilib \
+    g++-multilib \
     bc \
     libncurses5-dev \
     libncursesw5-dev \
