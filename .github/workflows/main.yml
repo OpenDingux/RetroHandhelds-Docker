@@ -1,0 +1,37 @@
+name: RetroHandhelds-Docker
+
+on: [push]
+
+jobs:
+  build:
+    name: Create & push images
+    runs-on: ubuntu-latest
+    steps:
+    - name: Login to Docker registry
+      uses: docker/login-action@25c0ca8bab9893f0962d4ffd043f2b7ab90e9a3f
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Set lower case owner name (Docker workaround)
+      run: echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+      env:
+        OWNER: '${{ github.repository_owner }}'
+    - uses: actions/checkout@v2
+    # This is not needed for now, but for consistency's sake
+    - name: Replace variables for base
+      run: sed "s/%%GITHUB_OWNER%%/${{ env.OWNER_LC }}/g" Dockerfile.base > Dockerfile
+    - name: Build and push base image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/${{ env.OWNER_LC }}/retro-toolchain/base:latest
+    - name: Replace variables for buildroot
+      run: sed "s/%%GITHUB_OWNER%%/${{ env.OWNER_LC }}/g" Dockerfile.buildroot > Dockerfile
+    - name: Build and push buildroot image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/${{ env.OWNER_LC }}/retro-toolchain/buildroot:latest
