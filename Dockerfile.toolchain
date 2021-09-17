@@ -5,9 +5,14 @@ RUN apt update && apt install -y \
     wget \
     cpio \
     python \
+    zip \
     unzip \
+    rar \
+    unrar \
+    p7zip-full \
     rsync \
     mercurial \
     u-boot-tools \
+    vorbis-tools \
     && rm -rf /var/lib/apt/lists/*
 

@@ -3,7 +3,7 @@ name: RetroHandhelds-Docker
 on: [push]
 
 jobs:
-  build:
+  build-base:
     name: Create & push images
     runs-on: ubuntu-latest
     steps:
@@ -27,6 +27,7 @@ jobs:
         context: .
         push: true
         tags: ghcr.io/${{ env.OWNER_LC }}/retro-toolchain/base:latest
+    # TODO: This can be paralelized
     - name: Replace variables for buildroot
       run: sed "s/%%GITHUB_OWNER%%/${{ env.OWNER_LC }}/g" Dockerfile.buildroot > Dockerfile
     - name: Build and push buildroot image
@@ -35,3 +36,11 @@ jobs:
         context: .
         push: true
         tags: ghcr.io/${{ env.OWNER_LC }}/retro-toolchain/buildroot:latest
+    - name: Replace variables for toolchain
+      run: sed "s/%%GITHUB_OWNER%%/${{ env.OWNER_LC }}/g" Dockerfile.toolchain > Dockerfile
+    - name: Build and push toolchain image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/${{ env.OWNER_LC }}/retro-toolchain/toolchain:latest
