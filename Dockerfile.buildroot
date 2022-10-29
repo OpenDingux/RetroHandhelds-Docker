@@ -1,6 +1,7 @@
 FROM ghcr.io/%%GITHUB_OWNER%%/retro-toolchain/base
 
 RUN apt update && apt install -y \
+    expect \
     file \
     wget \
     cpio \
